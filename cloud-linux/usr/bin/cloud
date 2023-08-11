@@ -1,7 +1,19 @@
 #!/bin/bash
 help()
 {
-    echo "usage : cloud [ -v | --version | -h | --help | push <source [destination] | pull <source> | get <source> <destination> ]"
+    echo -e "usage : cloud [ -v | --version | -h | --help | push <source [destination] | pull <source> | get <source> <destination> ]\n\n"
+    echo -e "-v ou --version : pour voir la version\n"
+    echo -e "-h ou --help : pour voir le manuel\n"
+    echo -e "push : pour envoyer des donnees\n"
+    echo -e "pull : pour recuperer des donnees depuis le repertoire actuel\n"
+    echo -e "get : pour recuperer des donnees\n"
+}
+config()
+{
+    echo "Host ninotech.com"
+    echo "HostName 192.168.43.1"
+    echo "Port 8080"
+    echo "User cloud"
 }
 if [ "$1" == "-v" ] ; then
     echo "NINOTECH CLOUD VERSION 1.1.0"
@@ -9,6 +21,13 @@ elif [ "$1" == "-h" -o "$1" == "--help" ] ; then
     help
 elif [ "$1" == "connect" -o "$#" -eq 0 ] ; then
     ssh cloud@ninotech.com
+elif [ "$1" == "config" ] ; then
+    test -e ~/.ssh
+    if [ "$?" -eq 0 ] ; then
+        grep "ninotech.com" ~/.ssh/config >> /dev/null 2> /dev/null || config >> ~/.ssh/config
+    else
+        mkdir ~/.ssh ; config >> ~/.ssh/config
+    fi
 elif [ "$1" == "push" ] ; then
     scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$3"
 elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
