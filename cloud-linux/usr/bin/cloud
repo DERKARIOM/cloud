@@ -1,10 +1,12 @@
 #!/bin/bash
 help()
 {
-    echo "usage : cloud "
+    echo "usage : cloud [ -v | --version | -h | --help | push <source [destination] | pull <source> | get <source> <destination> ]"
 }
 if [ "$1" == "-v" ] ; then
     echo "NINOTECH CLOUD VERSION 1.1.0"
+elif [ "$1" == "-h" -o "$1" == "--help" ] ; then
+    help
 elif [ "$1" == "connect" -o "$#" -eq 0 ] ; then
     ssh cloud@ninotech.com
 elif [ "$1" == "push" ] ; then
