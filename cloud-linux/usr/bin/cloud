@@ -1,6 +1,12 @@
 #!/bin/bash
+help()
+{
+    echo "usage : cloud "
+}
 if [ "$1" == "-v" ] ; then
     echo "NINOTECH CLOUD VERSION 1.1.0"
+elif [ "$1" == "connect" -o "$#" -eq 0 ] ; then
+    ssh cloud@ninotech.com
 elif [ "$1" == "push" ] ; then
     scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$3"
 elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
