@@ -19,7 +19,7 @@ if [ "$1" == "-v" ] ; then
     echo "NINOTECH CLOUD VERSION 1.1.0"
 elif [ "$1" == "-h" -o "$1" == "--help" ] ; then
     help
-elif [ "$1" == "connect" -o "$#" -eq 0 ] ; then
+elif [ "$1" == "connect" -a "$#" -eq 1 ] ; then
     ssh cloud@ninotech.com
 elif [ "$1" == "config" ] ; then
     test -e ~/.ssh
@@ -34,4 +34,6 @@ elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
     scp -O -r cloud@ninotech.com:/home/cloud/"$2" .
 elif [ "$1" == "get" -a "$#" -eq 3 ] ; then
     scp -O -r cloud@ninotech.com:/home/cloud/"$2" "$3"
+elif [ "$1" == "connect" -a "$2" == "mysql" -a "$#" -eq 2 ] ; then
+    ssh -t cloud@ninotech.com mysql -uroot -pKadux#5456
 fi
