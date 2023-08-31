@@ -1,0 +1,16 @@
+#!/bin/bash
+help()
+{
+    echo -e "usage : a2 [ -v | --version | -h | --help | push | pull ]\n\n" 
+}
+if [ "$1" == "-v" -o "$1" == "--version" ] ; then
+    echo "a2 version 1.0.0"
+elif [ "$1" == "-h" -o "$1" == "--help" ] ;then
+    help
+elif [ "$1" == "push" ] ; then
+    scp -r -O "$2" cloud@ninotech.com:/var/www/html/"$3"
+elif [ "$1" == "pull" ] ; then
+    scp -r -O cloud@ninotech.com:/var/www/html/"$2" .
+elif [ "$1" == "clean" ] ; then
+    ssh -t cloud@ninotech.com sudo rm -r /var/www/html/*.*
+fi
