@@ -36,4 +36,6 @@ elif [ "$1" == "get" -a "$#" -eq 3 ] ; then
     scp -O -r cloud@ninotech.com:/home/cloud/"$2" "$3"
 elif [ "$1" == "connect" -a "$2" == "mysql" -a "$#" -eq 2 ] ; then
     ssh -t cloud@ninotech.com mysql -uroot -pKadux#5456
+elif [ "$1" == "ls" -o "$1" == "list" ] ; then
+    ssh -t cloud@ninotech.com ls -1 /home/cloud/"$2"
 fi
