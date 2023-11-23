@@ -29,11 +29,26 @@ elif [ "$1" == "config" ] ; then
     else
         mkdir ~/.ssh ; config >> ~/.ssh/config
     fi
-elif [ "$1" == "push" -a "$3" != "--" ] ; then
-    scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$3"
-elif [ "$1" == "push" -a "$3" == "--" ] ; then
-    data=$(ssh cloud@ninotech.com ls -1 | fzf)
-    scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$data"
+elif [ "$1" == "push" ] ; then
+    p1=$(echo "$3" | cut -d/ -f 1)
+    p2=$(echo "$3" | cut -d/ -f 2)
+    if [ "$3" == "x" ] ; then
+        data=$(ssh cloud@ninotech.com ls -1 | fzf)
+        if [ "$?" -eq 0 ] ; then
+                scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$data"
+        elif [ "$?" -eq 1 ] ; then
+            echo "Merci d' avoir essayer"
+        fi
+    elif [ "$p2" == "x" -a "$p1" != "x" ] ; then
+        data=$(ssh cloud@ninotech.com ls "$p1" -1 | fzf)
+        if [ "$?" -eq 0 ] ; then
+                scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$p1"/"$data"
+       elif [ "$?" -eq 1 ] ; then
+            echo "Merci d' avoir essayer"
+        fi
+    else
+            scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$3"
+    fi
 elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
     p1=$(echo "$2" | cut -d/ -f 1)
     p2=$(echo "$2" | cut -d/ -f 2)
