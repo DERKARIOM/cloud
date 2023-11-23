@@ -59,6 +59,13 @@ elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
         elif [ "$?" -eq 1 ] ; then
             echo "Merci d' avoir essayer"
         fi
+     elif [ "$2" == "X" ] ; then
+        data=$(ssh cloud@ninotech.com ls -1 -R | fzf)
+        if [ "$?" -eq 0 ] ; then
+            scp -O -r cloud@ninotech.com:/home/cloud/"$data" .
+        elif [ "$?" -eq 1 ] ; then
+            echo "Merci d' avoir essayer"
+        fi   
     elif [ "$p2" == "x" -a "$p1" != "x" ] ; then
         data=$(ssh cloud@ninotech.com ls "$p1" -1 | fzf)
         if [ "$?" -eq 0 ] ; then
