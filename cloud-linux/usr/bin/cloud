@@ -7,6 +7,7 @@ help()
     echo -e "push : pour envoyer des donnees\n"
     echo -e "pull : pour recuperer des donnees depuis le repertoire actuel\n"
     echo -e "get : pour recuperer des donnees\n"
+    echo -e "ls : pour lister le contenue d' un repertoire du cloud"
 }
 config()
 {
@@ -28,14 +29,22 @@ elif [ "$1" == "config" ] ; then
     else
         mkdir ~/.ssh ; config >> ~/.ssh/config
     fi
-elif [ "$1" == "push" ] ; then
+elif [ "$1" == "push" -a "$3" != "--" ] ; then
     scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$3"
-elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
+elif [ "$1" == "push" -a "$3" == "--" ] ; then
+    data=$(ssh cloud@ninotech.com ls -1 | fzf)
+    scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$data"
+elif [ "$1" == "pull" -a "$2" != "--" -a "$#" -eq 2 ] ; then
     scp -O -r cloud@ninotech.com:/home/cloud/"$2" .
+elif [ "$1" == "pull" -a "$2" == "--" -a "$#" -eq 2 ] ; then
+    data=$(ssh cloud@ninotech.com ls -1 | fzf)
+    scp -O -r cloud@ninotech.com:/home/cloud/"$data" .
 elif [ "$1" == "get" -a "$#" -eq 3 ] ; then
     scp -O -r cloud@ninotech.com:/home/cloud/"$2" "$3"
 elif [ "$1" == "connect" -a "$2" == "mysql" -a "$#" -eq 2 ] ; then
     ssh -t cloud@ninotech.com mysql -uroot -pKadux#5456
 elif [ "$1" == "ls" -o "$1" == "list" ] ; then
-    ssh -t cloud@ninotech.com ls -1 /home/cloud/"$2"
+    ssh -t cloud@ninotech.com ls -1 /home/cloud/"$2" 
+elif [ "$1" == "xls" -o "$1" == "xlist" ] ; then
+    ssh -t cloud@ninotech.com "ls /home/cloud/"$2" | fzf"
 fi
