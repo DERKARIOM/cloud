@@ -24,7 +24,7 @@ isFzf()
     fi
 }
 if [ "$1" == "-v" ] ; then
-    echo "NINOTECH CLOUD VERSION 1.1.0"
+    echo "NINOTECH CLOUD VERSION 2.4 beta"
 elif [ "$1" == "-h" -o "$1" == "--help" ] ; then
     help
 elif [ "$1" == "connect" -a "$#" -eq 1 ] ; then
