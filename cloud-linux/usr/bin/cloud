@@ -16,6 +16,13 @@ config()
     echo "Port 8080"
     echo "User cloud"
 }
+isFzf()
+{
+    fzf --version >> /dev/null 2> /dev/null
+    if [ "$?" -ne 0 ] ; then
+        sudo apt install fzf
+    fi
+}
 if [ "$1" == "-v" ] ; then
     echo "NINOTECH CLOUD VERSION 1.1.0"
 elif [ "$1" == "-h" -o "$1" == "--help" ] ; then
@@ -33,14 +40,24 @@ elif [ "$1" == "push" ] ; then
     p1=$(echo "$3" | cut -d/ -f 1)
     p2=$(echo "$3" | cut -d/ -f 2)
     if [ "$3" == "x" ] ; then
-        data=$(ssh cloud@ninotech.com ls -1 | fzf)
+        isFzf
+        data=$(ssh cloud@ninotech.com ls -a -1 | fzf)
         if [ "$?" -eq 0 ] ; then
                 scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$data"
         elif [ "$?" -eq 1 ] ; then
             echo "Merci d' avoir essayer"
         fi
+    elif [ "$3" == "X" ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com xfind . | fzf)
+        if [ "$?" -eq 0 ] ; then
+            scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$data"
+        else
+            echo "Merci d' avoir essayer"
+        fi   
     elif [ "$p2" == "x" -a "$p1" != "x" ] ; then
-        data=$(ssh cloud@ninotech.com ls "$p1" -1 | fzf)
+        isFzf
+        data=$(ssh cloud@ninotech.com ls "$p1" -1 -a | fzf)
         if [ "$?" -eq 0 ] ; then
                 scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$p1"/"$data"
        elif [ "$?" -eq 1 ] ; then
@@ -53,20 +70,23 @@ elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
     p1=$(echo "$2" | cut -d/ -f 1)
     p2=$(echo "$2" | cut -d/ -f 2)
     if [ "$2" == "x" ] ; then
+        isFzf
         data=$(ssh cloud@ninotech.com ls -1 | fzf)
         if [ "$?" -eq 0 ] ; then
             scp -O -r cloud@ninotech.com:/home/cloud/"$data" .
-        elif [ "$?" -eq 1 ] ; then
+        else
             echo "Merci d' avoir essayer"
         fi
-     elif [ "$2" == "X" ] ; then
-        data=$(ssh cloud@ninotech.com ls -1 -R | fzf)
+    elif [ "$2" == "X" ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com xfind . | fzf)
         if [ "$?" -eq 0 ] ; then
             scp -O -r cloud@ninotech.com:/home/cloud/"$data" .
-        elif [ "$?" -eq 1 ] ; then
+        else
             echo "Merci d' avoir essayer"
         fi   
     elif [ "$p2" == "x" -a "$p1" != "x" ] ; then
+        isFzf
         data=$(ssh cloud@ninotech.com ls "$p1" -1 | fzf)
         if [ "$?" -eq 0 ] ; then
             scp -O -r cloud@ninotech.com:/home/cloud/"$p1"/"$data" .
@@ -83,5 +103,6 @@ elif [ "$1" == "connect" -a "$2" == "mysql" -a "$#" -eq 2 ] ; then
 elif [ "$1" == "ls" -o "$1" == "list" ] ; then
     ssh -t cloud@ninotech.com ls -1 /home/cloud/"$2" 
 elif [ "$1" == "xls" -o "$1" == "xlist" ] ; then
+    isFzf
     ssh -t cloud@ninotech.com "ls /home/cloud/"$2" | fzf"
 fi
