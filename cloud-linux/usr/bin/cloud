@@ -94,7 +94,7 @@ elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
             echo "Merci d' avoir essayer"
         fi
     else
-        scp -O -r cloud@ninotech.com:/home/cloud/"$1" .
+        scp -O -r cloud@ninotech.com:/home/cloud/"$2" .
     fi
 elif [ "$1" == "get" -a "$#" -eq 3 ] ; then
     scp -O -r cloud@ninotech.com:/home/cloud/"$2" "$3"
