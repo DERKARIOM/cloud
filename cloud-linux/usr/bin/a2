@@ -16,6 +16,10 @@ elif [ "$1" == "init" ] ; then
     scp -O -r * cloud@ninotech.com:/var/www/html/
 elif [ "$1" == "ensite" ] ; then
     ssh cloud@ninotech.com ln -s /home/"$2" /var/www/html/
+elif [ "$1" == "disite" ] ; then
+    ssh -t cloud@ninotech.com rm /var/www/html/"$2"
 elif [ "$1" == "clean" ] ; then
     ssh -t cloud@ninotech.com "sudo rm -r /var/www/html/ ; sudo mkdir /var/www/html/"
+elif [ "$1" == "clean" ] ; then
+    ssh cloud@ninotech.com code ; open 192.168.43.1:2223
 fi

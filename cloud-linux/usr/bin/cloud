@@ -105,4 +105,7 @@ elif [ "$1" == "ls" -o "$1" == "list" ] ; then
 elif [ "$1" == "xls" -o "$1" == "xlist" ] ; then
     isFzf
     ssh -t cloud@ninotech.com "ls /home/cloud/"$2" | fzf"
+elif [ "$1" == "find" ] ; then
+    isFzf
+    ssh -t cloud@ninotech.com "ls -1 -R /home/cloud/"$2" | fzf"
 fi
