@@ -37,8 +37,8 @@ elif [ "$1" == "config" ] ; then
         mkdir ~/.ssh ; config >> ~/.ssh/config
     fi
 elif [ "$1" == "push" ] ; then
-    p1=$(echo "$3" | cut -d/ -f 1)
-    p2=$(echo "$3" | cut -d/ -f 2)
+    p1=$(echo "$3" | cut -d'x' -f 1)
+    # p2=$(echo "$3" | cut -d/ -f 2)
     if [ "$3" == "x" ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com ls -a -1 | fzf)
@@ -55,7 +55,7 @@ elif [ "$1" == "push" ] ; then
         else
             echo "Merci d' avoir essayer"
         fi   
-    elif [ "$p2" == "x" -a "$p1" != "x" ] ; then
+    elif [ "$3" != "$p1" ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com ls "$p1" -1 -a | fzf)
         if [ "$?" -eq 0 ] ; then
@@ -67,8 +67,8 @@ elif [ "$1" == "push" ] ; then
             scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$3"
     fi
 elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
-    p1=$(echo "$2" | cut -d/ -f 1)
-    p2=$(echo "$2" | cut -d/ -f 2)
+    p1=$(echo "$2" | cut -d'x' -f 1)
+    #p2=$(echo "$2" | cut -d/ -f 2)
     if [ "$2" == "x" ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com ls -1 | fzf)
@@ -85,7 +85,7 @@ elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
         else
             echo "Merci d' avoir essayer"
         fi   
-    elif [ "$p2" == "x" -a "$p1" != "x" ] ; then
+    elif [ "$3" != "$p1"  ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com ls "$p1" -1 | fzf)
         if [ "$?" -eq 0 ] ; then
