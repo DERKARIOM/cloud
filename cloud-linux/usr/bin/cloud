@@ -43,7 +43,7 @@ elif [ "$1" == "push" ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com ls -a -1 | fzf)
         if [ "$?" -eq 0 ] ; then
-                scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$data"
+                scp -O -r "$2" cloud@ninotech.com:/home/cloud/\""$data"\"
         elif [ "$?" -eq 1 ] ; then
             echo "Merci d' avoir essayer"
         fi
@@ -51,20 +51,20 @@ elif [ "$1" == "push" ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com xfind . | fzf)
         if [ "$?" -eq 0 ] ; then
-            scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$data"
+            scp -O -r "$2" cloud@ninotech.com:/home/cloud/\""$data"\"
         else
             echo "Merci d' avoir essayer"
         fi   
     elif [ "$3" != "$p1" ] ; then
         isFzf
-        data=$(ssh cloud@ninotech.com ls "$p1" -1 -a | fzf)
+        data=$(ssh cloud@ninotech.com ls -1 -a "$p1" | fzf)
         if [ "$?" -eq 0 ] ; then
-                scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$p1"/"$data"
+                scp -O -r "$2" cloud@ninotech.com:/home/cloud/\""$p1"\"/\""$data"\"
        elif [ "$?" -eq 1 ] ; then
             echo "Merci d' avoir essayer"
         fi
     else
-            scp -O -r "$2" cloud@ninotech.com:/home/cloud/"$3"
+            scp -O -r "$2" cloud@ninotech.com:/home/cloud/\""$3"\"
     fi
 elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
     p1=$(echo "$2" | cut -d'x' -f 1)
@@ -73,7 +73,7 @@ elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com ls -1 | fzf)
         if [ "$?" -eq 0 ] ; then
-            scp -O -r cloud@ninotech.com:/home/cloud/"$data" .
+            scp -O -r cloud@ninotech.com:/home/cloud/\""$data"\" .
         else
             echo "Merci d' avoir essayer"
         fi
@@ -81,20 +81,20 @@ elif [ "$1" == "pull" -a "$#" -eq 2 ] ; then
         isFzf
         data=$(ssh cloud@ninotech.com xfind . | fzf)
         if [ "$?" -eq 0 ] ; then
-            scp -O -r cloud@ninotech.com:/home/cloud/"$data" .
+            scp -O -r cloud@ninotech.com:/home/cloud/\""$data"\" .
         else
             echo "Merci d' avoir essayer"
         fi   
     elif [ "$3" != "$p1"  ] ; then
         isFzf
-        data=$(ssh cloud@ninotech.com ls "$p1" -1 | fzf)
+        data=$(ssh cloud@ninotech.com ls \""$p1"\" -1 | fzf)
         if [ "$?" -eq 0 ] ; then
-            scp -O -r cloud@ninotech.com:/home/cloud/"$p1"/"$data" .
+            scp -O -r cloud@ninotech.com:/home/cloud/\""$p1"\"/\""$data"\" .
         elif [ "$?" -eq 1 ] ; then
             echo "Merci d' avoir essayer"
         fi
     else
-        scp -O -r cloud@ninotech.com:/home/cloud/"$2" .
+        scp -O -r cloud@ninotech.com:/home/cloud/\""$2"\" .
     fi
 elif [ "$1" == "get" -a "$#" -eq 3 ] ; then
     scp -O -r cloud@ninotech.com:/home/cloud/"$2" "$3"
