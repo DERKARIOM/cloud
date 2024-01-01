@@ -3,14 +3,79 @@ help()
 {
     echo -e "usage : a2 [ -v | --version | -h | --help | push | pull ]\n\n" 
 }
+isFzf()
+{
+    fzf --version >> /dev/null 2> /dev/null
+    if [ "$?" -ne 0 ] ; then
+        sudo apt install fzf
+    fi
+}
 if [ "$1" == "-v" -o "$1" == "--version" ] ; then
     echo "a2 version 2.4 beta"
 elif [ "$1" == "-h" -o "$1" == "--help" ] ;then
     help
 elif [ "$1" == "push" ] ; then
-    scp -r -O "$2" cloud@ninotech.com:/var/www/html/"$3"
+    #scp -r -O "$2" cloud@ninotech.com:/var/www/html/"$3"
+    p1=$(echo "$3" | cut -d'x' -f 1)
+    # p2=$(echo "$3" | cut -d/ -f 2)
+    if [ "$3" == "x" ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com ls -a -1 /var/www/html | fzf)
+        if [ "$?" -eq 0 ] ; then
+                scp -O -r "$2" cloud@ninotech.com:/var/www/html/"$data"
+        elif [ "$?" -eq 1 ] ; then
+            echo "Merci d' avoir essayer"
+        fi
+    elif [ "$3" == "X" ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com xfind . | fzf)
+        if [ "$?" -eq 0 ] ; then
+            scp -O -r "$2" cloud@ninotech.com:/var/www/html/"$data"
+        else
+            echo "Merci d' avoir essayer"
+        fi   
+    elif [ "$3" != "$p1" ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com ls -1 -a /var/www/html/"$p1" | fzf)
+        if [ "$?" -eq 0 ] ; then
+                scp -O -r "$2" cloud@ninotech.com:/var/www/html/"$p1"/"$data"
+       elif [ "$?" -eq 1 ] ; then
+            echo "Merci d' avoir essayer"
+        fi
+    else
+        scp -r -O "$2" cloud@ninotech.com:/var/www/html/"$3"
+    fi
 elif [ "$1" == "pull" ] ; then
-    scp -r -O cloud@ninotech.com:/var/www/html/"$2" .
+    #scp -r -O cloud@ninotech.com:/var/www/html/"$2" .
+    p1=$(echo "$2" | cut -d'x' -f 1)
+    #p2=$(echo "$2" | cut -d/ -f 2)
+    if [ "$2" == "x" ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com ls -1 /var/www/html | fzf)
+        if [ "$?" -eq 0 ] ; then
+            scp -O -r cloud@ninotech.com:/var/www/html/"$data" .
+        else
+            echo "Merci d' avoir essayer"
+        fi
+    elif [ "$2" == "X" ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com xfind . | fzf)
+        if [ "$?" -eq 0 ] ; then
+            scp -O -r cloud@ninotech.com:/var/www/html/"$data" .
+        else
+            echo "Merci d' avoir essayer"
+        fi   
+    elif [ "$3" != "$p1"  ] ; then
+        isFzf
+        data=$(ssh cloud@ninotech.com ls -1 /var/www/html/"$p1" | fzf)
+        if [ "$?" -eq 0 ] ; then
+            scp -O -r cloud@ninotech.com:/var/www/html/"$p1"/"$data" .
+        elif [ "$?" -eq 1 ] ; then
+            echo "Merci d' avoir essayer"
+        fi
+    else
+        scp -O -r cloud@ninotech.com:/var/www/html/"$2" .
+    fi
 elif [ "$1" == "init" ] ; then
     ssh -t cloud@ninotech.com "sudo rm -r /var/www/html/ ; sudo mkdir /var/www/html/" 
     scp -O -r * cloud@ninotech.com:/var/www/html/
